@@ -29,7 +29,7 @@ app.post('/commands/mortybot', (req, res) => {
 
   if (!payload || payload.token !== config('MORTYBOT_COMMAND_TOKEN')) {
     let err = '✋  You are not a good driver. An invalid slash token was provided\n' +
-              '   Is your Slack slash token correctly configured?'
+              '   Is your Slack slash token correctly configured?' + 'Token is: ' + payload.token
     console.log(err)
     res.status(401).end(err)
     return
