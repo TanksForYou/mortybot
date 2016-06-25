@@ -1,15 +1,14 @@
 {
-  "name": "🌟 Starbot",
-  "description": "Starbot is GitHub's trending open-source page, reincarnated as a Slack bot",
-  "repository": "https://github.com/mattcreager/starbot",
-  "logo": "https://heroku-www-files.s3.amazonaws.com/starbot/starbot-icon.png",
+  "name": "Mortybot",
+  "description": "Morty is the man.",
+  "repository": "https://github.com/TanksForYou/mortybot.git",
   "success_url": "/",
   "env": {
     "HEROKU_APP_NAME": {
       "required": true
     },
-    "STARBOT_COMMAND_TOKEN": {
-      "description": "Slash command token, for the starbot command endpoint",
+    "MORTYBOT_COMMAND_TOKEN": {
+      "description": "Slash command token, for the mortybot command endpoint",
       "required": true
     },
     "SLACK_TOKEN": {

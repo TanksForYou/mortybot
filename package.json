@@ -1,20 +1,21 @@
 {
-  "name": "starbot",
-  "description": "Starbot is GitHub's trending open-source page, reincarnated as a Slack bot",
-  "version": "1.0.0",
+  "name": "mortybot",
+  "description": "Morty is the man. Based on Starbot by Matt Creatger <http://github.com/mattcreager/starbot>.",
+  "version": "0.1.0",
   "main": "src/index.js",
+  "private": "true",
   "scripts": {
     "start": "node ./src",
     "notify": "node ./src/tasks/notify",
     "test": "standard"
   },
   "author": {
-    "email": "creager@heroku.com",
-    "name": "Matthew Creager",
-    "url": "https://twitter.com/matt_creager"
+    "email": "davemerkel@gmail.com",
+    "name": "Dave Merkel",
+    "url": "https://www.github.com/TanksForYou"
   },
   "bugs": {
-    "url": "https://github.com/mattcreager"
+    "url": "https://github.com/TanksForYou/mortybot/issues"
   },
   "dependencies": {
     "body-parser": "^1.15.0",
@@ -30,7 +31,8 @@
     "slack",
     "slack-bot",
     "bot",
-    "heroku"
+    "heroku",
+    "dnd"
   ],
   "license": "MIT",
   "engines": {
