@@ -25,15 +25,10 @@ app.get('/', (req, res) => { res.send('\n 👋 🌍 \n') })
 
 app.post('/commands/mortybot', (req, res) => {
   let payload = req.body
-  console.log(payload)
-  console.log(process.env)
-  console.log('Checking config return value: ', config('MORTYBOT_COMMAND_TOKEN'))
-  console.log('Checking process.env return value: ', process.env.MORTYBOT_COMMAND_TOKEN)
 
   if (!payload || payload.token !== config('MORTYBOT_COMMAND_TOKEN')) {
     let err = '✋  You are not a good driver. An invalid slash token was provided\n' +
-              '   Is your Slack slash token correctly configured?\n' + 'Token is: ' + payload.token +
-              ' Environment expects: ' + config('MORTYBOT_COMMAND_TOKEN')
+              '   Is your Slack slash token correctly configured?\n'
     console.log(err)
     res.status(401).end(err)
     return

@@ -18,8 +18,9 @@ const handler = (payload, res) => {
   var rollReq = rollString.split('d')
   var numDice = parseInt(rollReq[0] || 1, 10)
   var dieType = parseInt(rollReq[1], 10)
-  var mortyReply = "Morty is the man."
-  var rollResult = 0
+  var mortyReply = "Morty's the man."
+  var rollResults = []
+  var rollTotal = 0
 
   if (isNaN(numDice)) {
     console.log('Invalid number of dice: ', numDice)
@@ -28,13 +29,14 @@ const handler = (payload, res) => {
     console.log('Invalid die type: ', dieType)
     mortyReply = mortyReply.concat(" ", "Morty doesn't have that kind of die.")
   } else {
-    console.log('rolling: ', payload.text)
+    console.log('Rolling: ', payload.text)
 
     for (var i = 0; i < numDice; i++) {
-        rollResult += Math.floor(Math.random() * dieType) + 1
+        rollResults.push(Math.floor(Math.random() * dieType) + 1)
+        rollTotal += rollResults[rollResults.length-1]
     }
-    console.log('result: ', rollResult)
-    mortyReply = mortyReply.concat(" It's ", rollResult, ".")
+    console.log('Total: ', rollTotal, ' Rolls: ', rollResults)
+    mortyReply = mortyReply.concat(" I rolled: ", rollTotal, " (", rollResults,")")
   }
 
   let msg = _.defaults({
