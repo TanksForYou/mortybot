@@ -6,5 +6,5 @@ channel_name=test&
 user_id=U2147483697&
 user_name=Steve&
 command=/mortybot&
-text=roll 4d6&
+text=help&
 response_url=invalid&
