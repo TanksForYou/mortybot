@@ -17,7 +17,7 @@ const config = {
 }
 
 console.log('In config, env value: ', process.env.MORTYBOT_COMMAND_TOKEN,
-            ' config const: ', config('MORTYBOT_COMMAND_TOKEN'))
+            ' config const: ', config['MORTYBOT_COMMAND_TOKEN'])
 
 module.exports = (key) => {
   if (!key) return config
