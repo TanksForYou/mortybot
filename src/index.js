@@ -27,6 +27,8 @@ app.post('/commands/mortybot', (req, res) => {
   let payload = req.body
   console.log(payload)
   console.log(process.env)
+  console.log('Checking config return value: ', config('MORTYBOT_COMMAND_TOKEN'))
+  console.log('Checking process.env return value: ', process.env.MORTYBOT_COMMAND_TOKEN)
 
   if (!payload || payload.token !== process.env.MORTYBOT_COMMAND_TOKEN) {
     let err = '✋  You are not a good driver. An invalid slash token was provided\n' +
