@@ -39,6 +39,7 @@ const handler = (payload, res) => {
     mortyReply = mortyReply.concat(" I rolled: ", rollTotal, " (", rollResults,")")
   }
 
+  mortyReply = mortyReply + '\n'
   let msg = _.defaults({
     channel: payload.channel_name,
     text: mortyReply
