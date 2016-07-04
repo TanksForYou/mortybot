@@ -1,11 +1,11 @@
 {
   "name": "mortybot",
   "description": "Morty is the man. Based on Starbot by Matt Creatger <http://github.com/mattcreager/starbot>.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "src/index.js",
   "private": "true",
   "scripts": {
-    "start": "node ./src",
+    "start": "pegjs src/grammar/rollparse.pegjs src/grammar/rollparse.js; node ./src",
     "notify": "node ./src/tasks/notify",
     "test": "standard"
   },
@@ -25,7 +25,8 @@
     "express-http-proxy": "^0.6.0",
     "github-trending": "^1.3.1",
     "lodash": "^4.6.1",
-    "slack": "^6.1.0"
+    "slack": "^6.1.0",
+    "pegjs": "0.9.0"
   },
   "keywords": [
     "slack",

@@ -1,0 +1,273 @@
+start
+  = rollstring
+
+rollstring
+  = rgnobracket+
+
+rgnobracket
+  = rollgroup:(troll:roll tmodifier:modifier? [+\-]? { if (tmodifier) { return [troll, tmodifier] } else return troll } )+
+    [ ]* &[\{\}] { return rollgroup }
+  / rgbracket
+
+rgbracket
+  = "{" [ ]* rollgroup:rgnobracket [ ]* "}" { return rollgroup }
+
+roll
+  = numdice:[0-9]+ "d" dietype:[0-9]+
+    { return numdice.join("") + "d" + dietype.join("") }
+
+modifier
+  = modsign:[+\-] modval:[0-9]+ !"d" { return modsign + modval.join("") }
+
+// old stuff
+
+tart
+  = rollstring
+
+rollstring
+  = rgnobracket* rgbracket*
+
+rgnobracket
+  = rgnobracket:(roll:roll modifier:modifier? { if modifier == NULL return roll})
+    (modsign:[+\-] roll:roll modifier:modifier? { if modifier == NULL return roll })*
+    [ ]*[\{]? { return rgnobracket }
+
+rgbracket
+  = "{" rgbracket:(roll:roll modifier:modifier? { if modifier == NULL return roll})
+    (modsign:[+\-] roll:roll modifier:modifier? { if modifier == NULL return roll })*
+    [ ]* "}" { return rgbracket }
+
+roll
+  = numdice:[0-9]+ "d" dietype:[0-9]+
+    { return numdice.join("") + "d" + dietype.join("") }
+
+modifier
+  = modsign:[+\-] modval:[0-9]+ { return modsign + modval.join("") }
+
+/* closer, has right structure but misses second die roll */
+
+start
+  = rollstring
+
+rollstring
+  = rgnobracket+
+
+rgnobracket
+  = rollgroup:((troll:roll tmodifier:modifier?)
+    ([+\-] troll:roll tmodifier:modifier? { return troll, tmodifier })*)
+    [ ]* &[\{] { return rollgroup }
+  / rgbracket
+
+rgbracket
+  = "{" [ ]* rgbracket:(troll:roll tmodifier:modifier? { if (!tmodifier) return troll})
+    (modsign:[+\-] troll:roll tmodifier:modifier? { if (!tmodifier) return troll })*
+    [ ]* "}" { return rgbracket }
+
+roll
+  = numdice:[0-9]+ "d" dietype:[0-9]+
+    { return numdice.join("") + "d" + dietype.join("") }
+
+modifier
+  = modsign:[+\-] modval:[0-9]+ { return modsign + modval.join("") }
+  / roll
+
+/* almost working */
+
+start
+  = rollstring
+
+rollstring
+  = rgnobracket+
+
+rgnobracket
+  = rollgroup:(troll:roll tmodifier:modifier? [+\-]?)+
+    [ ]* &[\{\}] { return rollgroup }
+  / rgbracket
+
+rgbracket
+  = "{" [ ]* rollgroup:rgnobracket [ ]* "}" { return rollgroup }
+
+roll
+  = numdice:[0-9]+ "d" dietype:[0-9]+
+    { return numdice.join("") + "d" + dietype.join("") }
+
+modifier
+  = modsign:[+\-] modval:[0-9]+ !"d" { return modsign + modval.join("") }
+  / roll
+
+/* troubleshooting grammar trying to find issue with this input: { 4d6+2 } 3d6+3
+   seems to not allow ? to work properly on end of input */
+
+   start
+     = rollstring
+
+   rollstring
+     = rgnobracket+
+
+   rgnobracket
+     = rollgroup:[ ]*(troll:roll tmodifier:modifier? [+\a]? { if (tmodifier) { return [troll, tmodifier] } else return troll } )+
+       [ ]* &[\{\}] { return rollgroup }
+     / rgbracket
+
+   rgbracket
+     = "{" [ ]* rollgroup:rgnobracket [ ]* "}" { return rollgroup }
+
+   roll
+     = numdice:[0-9]+ "d" dietype:[0-9]+
+       { return numdice.join("") + "d" + dietype.join("") }
+
+   modifier
+     = modsign:[+\-] modval:[0-9]+ !"d" { return modsign + modval.join("") }
+
+
+  /* commasep string grammar that works */
+
+  start
+  = rgcommasep
+
+rgcommasep
+  = [ ]* rollgroup:(troll:roll tmodifier:modifier? [+\-]? ","?
+  					{ if (tmodifier) { return [troll, tmodifier] } else return troll })+
+    { return rollgroup }
+
+roll
+  = numdice:[0-9]+ "d" dietype:[0-9]+
+    { return numdice.join("") + "d" + dietype.join("") }
+
+modifier
+  = modsign:[+\-] modval:[0-9]+ !"d" { return modsign + modval.join("") }
+
+
+/* looking at different result object layout */
+
+parsedResults = [
+                   [
+                      [
+                         "8d4",
+                         "+3"
+                      ],
+                      [
+                         "4d4",
+                         "+26"
+                      ]
+                   ],
+                   [
+                      [
+                         "4d6",
+                         "+2"
+                      ]
+                   ]
+                ]
+
+parsedResults = [
+                  [
+                    {
+                      string: 8d4+3
+                      numDice: 8
+                      dieType: 4
+                      modAmount: 3
+                      modFunction: function(base, amount) { return base + amount }
+                    }
+                    {
+                      string: 4d4+26
+                      numDice: 4
+                      dieType: 4
+                      modAmount: 26
+                      modFunction: function(base, amount) { return base + amount }
+                    }
+                  ],
+                  [
+                    {
+                      string: 4d6+2
+                      numDice: 4
+                      dieType: 6
+                      modAmount: 2
+                      modFunction: function(base, amount) { return base + amount }
+                    }
+                  ]
+                ]
+
+Grammar for above:
+
+start
+  = rgcommasep+
+
+rgcommasep
+  = [ ]* rollgroup:(troll:roll tmodifier:modifier? [+\-]?
+  					{
+                      var result = {}
+                      if (tmodifier) {
+                        for (var key in troll) result[key]=troll[key]
+                        for (var key in tmodifier) result[key]=tmodifier[key]
+                    	return result
+                      } else return troll
+                    })+ ","?
+    { return rollgroup }
+
+roll
+  = numdice:[0-9]+ "d" dietype:[0-9]+
+    { var rollObj = { numDice: 0,
+    				  dieType: 0 }
+
+      rollObj.numDice = numdice.join("")
+      rollObj.dieType = dietype.join("")
+
+      return rollObj
+    }
+
+modifier
+  = modsign:[+\-] modval:[0-9]+ !"d"
+  {
+    var modObj = { modVal: 0,
+    	           modFunc: 0 }
+
+    modObj.modVal = modval.join("")
+	modObj.modFunc = modsign
+	return modObj
+  }
+
+/* now with return functions assuming a,b arguments and rollstrings */
+
+start
+  = rgcommasep+
+
+rgcommasep
+  = [ ]* rollgroup:(troll:roll tmodifier:modifier? [+\-]? {
+                      var result = { rollString: "" }
+                      for (var key in troll) result[key]=troll[key]
+                      result.rollString = result.numDice + "d" + result.dieType
+                      if (tmodifier) {
+                        for (var key in tmodifier) result[key]=tmodifier[key]
+                    	result.rollString += tmodifier.modString + tmodifier.modVal
+                        return result
+                      }
+                      return result
+                    }
+                  )+ ","?
+    { return rollgroup }
+
+roll
+  = numdice:[0-9]+ "d" dietype:[0-9]+ {
+ 	  var rollObj = { numDice: 0,
+    				  dieType: 0 }
+
+      rollObj.numDice = numdice.join("")
+      rollObj.dieType = dietype.join("")
+
+      return rollObj
+    }
+
+modifier
+  = modsign:[+\-] modval:[0-9]+ !"d" {
+    var modObj = { modVal: 0,
+    	           modFunc: 0,
+                   modString: "" }
+
+    modObj.modVal = modval.join("")
+    modObj.modString = modsign
+	if (modsign == '+') modObj.modFunc = (a, b) => { return a + b }
+    else if (modsign == '-') modObj.modFunc = (a, b) => { return a - b }
+    else modObj.modFunc = undefined
+
+	return modObj
+  }
