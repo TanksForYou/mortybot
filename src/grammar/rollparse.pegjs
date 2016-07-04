@@ -86,8 +86,8 @@ modifier
 
       modObj.modVal = modval.join("")
       modObj.modString = modsign
-	    if (modsign == '+') modObj.modFunc = (a, b) => { return a + b }
-      else if (modsign == '-') modObj.modFunc = (a, b) => { return a - b }
+	    if (modsign == '+') modObj.modFunc = (a, b) => { return parseInt(a) + parseInt(b) }
+      else if (modsign == '-') modObj.modFunc = (a, b) => { return parseInt(a) - parseInt(b) }
       else modObj.modFunc = undefined
 
 	    return modObj
