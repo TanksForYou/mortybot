@@ -66,7 +66,7 @@ const handler = (payload, res) => {
       groupTotal += parseResult[i][j].rollTotal
 
       if (j > 0)  {
-        detailsString += ", "
+        detailsString += " "
         totalString += "+"
       }
       detailsString += parseResult[i][j].numDice + "d" +
@@ -74,7 +74,7 @@ const handler = (payload, res) => {
                        "(" + parseResult[i][j].rollResults + ") "
       totalString += parseResult[i][j].rollString
     }
-    totalString += ": " + groupTotal
+    totalString += ": *" + groupTotal + "*"
   }
 
   mortyReply += totalString + '\n' + detailsString + '\n'
