@@ -58,10 +58,9 @@ const handler = (payload, res) => {
         parseResult[i][j].rollTotal += parseResult[i][j].rollResults[k]
       }
 
-      if (typeof parseResult[i][j].modFunc != undefined) {
+      if (typeof parseResult[i][j].modFunc == "function") {
         parseResult[i][j].rollTotal = parseResult[i][j].modFunc(parseResult[i][j].rollTotal,
                                                                 parseResult[i][j].modVal)
-        console.log("Added modifier: ", parseResult[i][j].modVal)
       }
 
       groupTotal += parseResult[i][j].rollTotal
